@@ -1,6 +1,6 @@
 {
   "name": "react-native-ring-picker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "React Native Ring wheel Picker Navigator with complex animations by dragging",
   "keywords": [
     "react",
@@ -22,7 +22,8 @@
     "url": "https://github.com/slantz/react-native-ring-picker/issues"
   },
   "files": [
-    "src"
+    "src",
+    "index.js"
   ],
   "author": "Alex Kobylinski <kblnsk@gmail.com> (http://kblnsk.com/)",
   "license": "MIT",
