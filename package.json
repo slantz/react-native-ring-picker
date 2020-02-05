@@ -1,0 +1,51 @@
+{
+  "name": "react-native-ring-picker",
+  "version": "1.0.0",
+  "description": "React Native Ring wheel Picker Navigator with complex animations by dragging",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-native",
+    "picker",
+    "navigation",
+    "ring",
+    "animation",
+    "animated",
+    "panResponder"
+  ],
+  "homepage": "https://github.com/slantz/react-native-ring-picker",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/slantz/react-native-ring-picker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/slantz/react-native-ring-picker/issues"
+  },
+  "files": [
+    "src"
+  ],
+  "author": "Alex Kobylinski <kblnsk@gmail.com> (http://kblnsk.com/)",
+  "license": "MIT",
+  "main": "./index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "jest",
+    "coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "prop-types": "^15.7.2",
+    "react": "16.11.0",
+    "react-native": "0.61.2",
+    "react-native-svg": "^9.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.6.4",
+    "@babel/runtime": "7.6.3",
+    "@react-native-community/eslint-config": "^0.0.3",
+    "babel-jest": "24.9.0",
+    "jest": "24.9.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
