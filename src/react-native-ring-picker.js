@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Animated, Easing, PanResponder, Text, TouchableWithoutFeedback, View } from "react-native";
 import {SQUARE_DIMENSIONS} from "./util";
-import STYLES from "./styles";
+import { STYLES } from "./styles";
 import { CircleBlueGradient } from "./components/CircleBlueGradient";
 import { CircleTouchable } from "./components/CircleTouchable";
 import { SwipeArrowHint } from "./icons/SwipeArrowHint";

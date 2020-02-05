@@ -1,1 +1,1 @@
-export STYLES from './circle-picker';
+export { default as STYLES } from './circle-picker';
