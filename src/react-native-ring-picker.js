@@ -1,16 +1,34 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Animated, Easing, PanResponder, Text, TouchableWithoutFeedback, View } from "react-native";
-import {SQUARE_DIMENSIONS} from "util";
-import STYLES from "styles";
-import { CircleBlueGradient } from "components/CircleBlueGradient";
-import { CircleTouchable } from "components/CircleTouchable";
-import { SwipeArrowHint } from "icons/SwipeArrowHint";
-import { Circle } from "icons/Circle";
+import {SQUARE_DIMENSIONS} from "./util";
+import STYLES from "./styles";
+import { CircleBlueGradient } from "./components/CircleBlueGradient";
+import { CircleTouchable } from "./components/CircleTouchable";
+import { SwipeArrowHint } from "./icons/SwipeArrowHint";
+import { Circle } from "./icons/Circle";
 
 export default class ReactNativeRingPicker extends React.Component {
 
     static DEFAULT_ICON = <Circle />;
+
+    static propTypes = {
+        onPress: PropTypes.func,
+        girthAngle: PropTypes.number,
+        iconHideOnTheBackDuration: PropTypes.number,
+        icons: PropTypes.arrayOf(Object, String),
+        showArrowHint: PropTypes.bool,
+        style: PropTypes.object
+    };
+
+    static defaultProps = {
+        onPress: () => {},
+        girthAngle: 120,
+        iconHideOnTheBackDuration: 250,
+        icons: [{id: "action_1", title: "action_1"}, "action_2", "action_3", "action_4", "action_5"],
+        showArrowHint: true,
+        style: {}
+    };
 
     constructor(props) {
         super(props);
@@ -606,22 +624,4 @@ export default class ReactNativeRingPicker extends React.Component {
             </View>
         );
     }
-
-    static propTypes = {
-        onPress: PropTypes.func,
-        girthAngle: PropTypes.number,
-        iconHideOnTheBackDuration: PropTypes.number,
-        icons: PropTypes.arrayOf(Object, String),
-        showArrowHint: PropTypes.bool,
-        style: PropTypes.object
-    };
-
-    static defaultProps = {
-        onPress: () => {},
-        girthAngle: 120,
-        iconHideOnTheBackDuration: 250,
-        icons: [{id: "action_1", title: "action_1"}, "action_2", "action_3", "action_4", "action_5"],
-        showArrowHint: true,
-        style: {}
-    };
 }
