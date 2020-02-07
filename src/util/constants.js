@@ -1,8 +1,14 @@
 import { Dimensions } from "react-native";
 
+let width = Dimensions.get("window").width;
+let height = Dimensions.get("window").height;
+
+let narrowScreenSide = width <= height ? width : height;
+let broadScreenSide = width > height ? width : height;
+
 export const SQUARE_DIMENSIONS = {
-    WIDTH : Dimensions.get("window").width,
-    HEIGHT : Dimensions.get("window").height,
-    BLUE_INPUT_WIDTH : Dimensions.get("window").width * 0.56,
-    ICON_PADDING_FROM_WHEEL : Dimensions.get("window").height * 0.05
+    WIDTH : narrowScreenSide,
+    HEIGHT : broadScreenSide,
+    BLUE_INPUT_WIDTH : narrowScreenSide * 0.56,
+    ICON_PADDING_FROM_WHEEL : broadScreenSide * 0.05
 };
