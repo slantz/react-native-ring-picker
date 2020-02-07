@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Animated, Easing, PanResponder, Text, TouchableWithoutFeedback, View } from "react-native";
+import { Animated, Easing, PanResponder, Text, TouchableWithoutFeedback, View, Dimensions } from "react-native";
 import {SQUARE_DIMENSIONS} from "./util";
 import { STYLES } from "./styles";
 import { CircleBlueGradient } from "./components/CircleBlueGradient";
@@ -118,6 +118,15 @@ export default class ReactNativeRingPicker extends React.Component {
                     .all(this.getFinishAnimationPromises())
                     .then(() => this.snapNearestIconToVerticalAxis(lastGesture));
             }
+        });
+    }
+
+    componentDidMount() {
+        Dimensions.addEventListener("change", () => {
+            console.log("screen rotated");
+            this._wheelNavigator.measure((x, y, width, height, pageX, pageY) => {
+                console.log({x, y, width, height, pageX, pageY});
+            });
         });
     }
 
@@ -578,7 +587,7 @@ export default class ReactNativeRingPicker extends React.Component {
         return (
             <View style={style} onLayout={({nativeEvent}) => {
                 this._wheelNavigator.measure((x, y, width, height, pageX, pageY) => {
-                    console.log({x, y, width, height, pageX, pageY});
+                    // console.log({x, y, width, height, pageX, pageY});
                 });
             }}>
                 <View>
