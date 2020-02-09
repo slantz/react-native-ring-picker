@@ -16,6 +16,7 @@ Inside the react native project do the following
     styleIconText={{color: '#000', fontWeight: 'bold'}}
 />
 ```
+![Basic Default View](./assets/img/basic_default_view.png)
 
 ## Configuration sample
 ```jsx harmony
