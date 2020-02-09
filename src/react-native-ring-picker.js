@@ -122,19 +122,6 @@ export default class ReactNativeRingPicker extends React.Component {
         });
     }
 
-    // componentDidMount() {
-    //     Dimensions.addEventListener("change", () => {
-    //         console.log("screen rotated");
-    //         this._wheelNavigator.measure((x, y, width, height, pageX, pageY) => {
-    //             console.log({x, y, width, height, pageX, pageY});
-    //         });
-    //     });
-    // }
-
-    // componentWillUnmount() {
-    //     Dimensions.removeEventListener("change", () => {});
-    // }
-
     getCurrentSnappedMiddleIcon(icons) {
         return icons.filter((icon) => icon.index === 0)[0].id;
     }
