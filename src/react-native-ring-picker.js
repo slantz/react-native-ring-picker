@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Animated, Easing, PanResponder, Text, TouchableWithoutFeedback, View, Dimensions } from "react-native";
+import { Animated, Easing, PanResponder, Text, TouchableWithoutFeedback, View } from "react-native";
 import {SQUARE_DIMENSIONS} from "./util";
 import { STYLES } from "./styles";
 import { CircleBlueGradient } from "./components/CircleBlueGradient";
 import { CircleTouchable } from "./components/CircleTouchable";
 import { SwipeArrowHint } from "./icons/SwipeArrowHint";
 import { Circle } from "./icons/Circle";
+import { debounce } from "debounce";
 
 export default class ReactNativeRingPicker extends React.Component {
 
@@ -121,14 +122,18 @@ export default class ReactNativeRingPicker extends React.Component {
         });
     }
 
-    componentDidMount() {
-        Dimensions.addEventListener("change", () => {
-            console.log("screen rotated");
-            this._wheelNavigator.measure((x, y, width, height, pageX, pageY) => {
-                console.log({x, y, width, height, pageX, pageY});
-            });
-        });
-    }
+    // componentDidMount() {
+    //     Dimensions.addEventListener("change", () => {
+    //         console.log("screen rotated");
+    //         this._wheelNavigator.measure((x, y, width, height, pageX, pageY) => {
+    //             console.log({x, y, width, height, pageX, pageY});
+    //         });
+    //     });
+    // }
+
+    // componentWillUnmount() {
+    //     Dimensions.removeEventListener("change", () => {});
+    // }
 
     getCurrentSnappedMiddleIcon(icons) {
         return icons.filter((icon) => icon.index === 0)[0].id;
@@ -331,9 +336,31 @@ export default class ReactNativeRingPicker extends React.Component {
         ]
     };
 
-    goToCurrentFocusedPage() {
+    goToCurrentFocusedPage = () => {
         this.state.currentSnappedIcon && this.props.onPress(this.state.currentSnappedIcon);
-    }
+    };
+
+    defineAxesCoordinatesOnLayoutDisplacement = () => {
+        this._wheelNavigator.measure((x, y, width, height, pageX, pageY) => {
+            this.setState({
+                ...this.state,
+                ICON_PATH_RADIUS: height / 2 + STYLES.icon.height / 2 + SQUARE_DIMENSIONS.ICON_PADDING_FROM_WHEEL,
+                XY_AXES_COORDINATES: {
+                    X: pageX + (width / 2),
+                    Y: pageY + (height / 2),
+                    PAGE_Y: pageY,
+                    PAGE_X: pageX
+                }
+            });
+            this.STEP_LENGTH_TO_1_ANGLE = 2 * Math.PI * this.state.ICON_PATH_RADIUS / 360;
+
+            this.calculateIconCurrentPositions();
+        });
+    };
+
+    defineAxesCoordinatesOnLayoutChangeByStylesOrScreenRotation = () => {
+        this.defineAxesCoordinatesOnLayoutDisplacement();
+    };
 
     defineCurrentSection(x, y) {
         let yAxis = y < this.state.XY_AXES_COORDINATES.Y ? "TOP" : "BOTTOM";
@@ -585,11 +612,7 @@ export default class ReactNativeRingPicker extends React.Component {
         let { onPress, style, styleIconText } = this.props;
 
         return (
-            <View style={style} onLayout={({nativeEvent}) => {
-                this._wheelNavigator.measure((x, y, width, height, pageX, pageY) => {
-                    // console.log({x, y, width, height, pageX, pageY});
-                });
-            }}>
+            <View style={style} onLayout={debounce(this.defineAxesCoordinatesOnLayoutChangeByStylesOrScreenRotation, 100)}>
                 <View>
                     {this.state.icons.map((icon) => {
                         return (
@@ -609,23 +632,7 @@ export default class ReactNativeRingPicker extends React.Component {
                 <View
                     style={[STYLES.wheel]}
                     ref={component => this._wheelNavigator = component}
-                    onLayout={({nativeEvent}) => {
-                        this._wheelNavigator.measure((x, y, width, height, pageX, pageY) => {
-                            this.setState({
-                                ...this.state,
-                                ICON_PATH_RADIUS: height / 2 + STYLES.icon.height / 2 + SQUARE_DIMENSIONS.ICON_PADDING_FROM_WHEEL,
-                                XY_AXES_COORDINATES: {
-                                    X: pageX + (width / 2),
-                                    Y: pageY + (height / 2),
-                                    PAGE_Y: pageY,
-                                    PAGE_X: pageX
-                                }
-                            });
-                            this.STEP_LENGTH_TO_1_ANGLE = 2 * Math.PI * this.state.ICON_PATH_RADIUS / 360;
-
-                            this.calculateIconCurrentPositions();
-                        });
-                    }}>
+                    onLayout={this.defineAxesCoordinatesOnLayoutDisplacement}>
                     {this.state.showArrowHint && <View style={STYLES.swipeArrowHint}><SwipeArrowHint /></View>}
                     <Animated.View
                         style={this.getStyle()}
@@ -633,7 +640,7 @@ export default class ReactNativeRingPicker extends React.Component {
                         <CircleBlueGradient />
                     </Animated.View>
                     <View style={STYLES.wheelTouchableCenter}>
-                        <CircleTouchable onPress={this.goToCurrentFocusedPage.bind(this)}/>
+                        <CircleTouchable onPress={this.goToCurrentFocusedPage}/>
                     </View>
                 </View>
             </View>
