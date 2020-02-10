@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Animated, Easing, PanResponder, Text, TouchableWithoutFeedback, View } from "react-native";
-import {SQUARE_DIMENSIONS} from "./util";
+import { Animated, Easing, PanResponder, View } from "react-native";
+import { SQUARE_DIMENSIONS } from "./util";
 import { STYLES } from "./styles";
+import { Icons } from "./components/Icons";
 import { CircleBlueGradient } from "./components/CircleBlueGradient";
 import { CircleTouchable } from "./components/CircleTouchable";
 import { SwipeArrowHint } from "./icons/SwipeArrowHint";
@@ -88,9 +89,7 @@ export default class ReactNativeRingPicker extends React.Component {
             promises: this.state.icons.reduce((promises, icon) => {promises[icon.id] = null; return promises}, {}),
             resolvers: this.state.icons.reduce((resolvers, icon) => {resolvers[icon.id] = null; return resolvers}, {})
         };
-    }
 
-    UNSAFE_componentWillMount() {
         this._panResponder = PanResponder.create({
             onMoveShouldSetResponderCapture: () => true, //Tell iOS that we are allowing the movement
             onMoveShouldSetPanResponderCapture: () => true, // Same here, tell iOS that we allow dragging
@@ -549,23 +548,6 @@ export default class ReactNativeRingPicker extends React.Component {
         });
     }
 
-    getIconsTransformDynamicStyles(key) {
-        return {
-            opacity: this.state.icons.filter((icon) => icon.id === key)[0].position.x.interpolate({
-                inputRange : [0, SQUARE_DIMENSIONS.WIDTH * 0.3, SQUARE_DIMENSIONS.WIDTH * 0.7],
-                outputRange : [0.4, 1, 0.4]
-            }),
-            transform : [
-                {
-                    scale : this.state.icons.filter((icon) => icon.id === key)[0].position.x.interpolate({
-                        inputRange : [0, SQUARE_DIMENSIONS.WIDTH * 0.375, SQUARE_DIMENSIONS.WIDTH * 0.8],
-                        outputRange : [0.5, 1.2, 0.25]
-                    })
-                }
-            ]
-        };
-    }
-
     hideIconWhileMovingBehindCircle(key) {
         this.setIconDisplayState(key, false);
 
@@ -600,22 +582,7 @@ export default class ReactNativeRingPicker extends React.Component {
 
         return (
             <View style={style} onLayout={debounce(this.defineAxesCoordinatesOnLayoutChangeByStylesOrScreenRotation, 100)}>
-                <View>
-                    {this.state.icons.map((icon) => {
-                        return (
-                            <TouchableWithoutFeedback key={icon.index} onPress={() => onPress(icon.id)}>
-                                <Animated.View style={[STYLES.icon, icon.styles, icon.position.getLayout(), this.getIconsTransformDynamicStyles(icon.id)]}>
-                                    {icon.isShown &&
-                                        <View style={STYLES.iconContainer} >
-                                            {icon.el}
-                                            <Text style={[STYLES.iconText, styleIconText]}>{icon.title}</Text>
-                                        </View>
-                                    }
-                                </Animated.View>
-                            </TouchableWithoutFeedback>
-                        );
-                    })}
-                </View>
+                <Icons icons={this.state.icons} onPress={onPress} styleIconText={styleIconText}/>
                 <View
                     style={[STYLES.wheel]}
                     ref={component => this._wheelNavigator = component}
