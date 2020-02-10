@@ -21,7 +21,7 @@ export const Icon = ({icon, onPress, styleIconText}) => {
     });
 
     return (
-        <TouchableWithoutFeedback key={icon.index} onPress={() => onPress(icon.id)}>
+        <TouchableWithoutFeedback onPress={() => onPress(icon.id)}>
             <Animated.View
                 style={[STYLES.icon, icon.styles, icon.position.getLayout(), getIconsTransformDynamicStyles()]}>
                 {icon.isShown &&
