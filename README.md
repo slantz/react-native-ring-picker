@@ -16,7 +16,7 @@ Inside the react native project do the following
     styleIconText={{color: '#000', fontWeight: 'bold'}}
 />
 ```
-![Basic Preview](./assets/gif/ring-picker-basic-preview.gif)
+![Basic Preview](./assets/gif/ring-picker-basic-preview-black.gif)
 
 ## Configuration sample
 ```jsx harmony
