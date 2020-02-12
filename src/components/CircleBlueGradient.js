@@ -1,11 +1,11 @@
+import React from "react";
+
 import Svg,{
     G,
     Path,
     LinearGradient,
     Stop
 } from "react-native-svg";
-
-import React from "react";
 
 export const CircleBlueGradient = () => (
     <Svg width="100%" height="100%" viewBox="0 0 955 955">

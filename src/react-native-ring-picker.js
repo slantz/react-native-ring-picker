@@ -12,7 +12,7 @@ import { debounce } from "debounce";
 
 export default class ReactNativeRingPicker extends React.Component {
 
-    static DEFAULT_ICON = <Circle />;
+    static DEFAULT_ICON = (color) => <Circle color={color}/>;
 
     static propTypes = {
         onPress: PropTypes.func,
@@ -21,7 +21,8 @@ export default class ReactNativeRingPicker extends React.Component {
         icons: PropTypes.arrayOf(Object, String),
         showArrowHint: PropTypes.bool,
         style: PropTypes.object,
-        styleIconText: PropTypes.object
+        styleIconText: PropTypes.object,
+        defaultIconColor: PropTypes.string
     };
 
     static defaultProps = {
@@ -31,7 +32,8 @@ export default class ReactNativeRingPicker extends React.Component {
         icons: [{id: "action_1", title: "action_1"}, "action_2", "action_3", "action_4", "action_5"],
         showArrowHint: true,
         style: {},
-        styleIconText: {}
+        styleIconText: {},
+        defaultIconColor: undefined
     };
 
     constructor(props) {
@@ -297,7 +299,7 @@ export default class ReactNativeRingPicker extends React.Component {
         }
 
         let getEl = (propIcon) => {
-            return React.isValidElement(propIcon) ? propIcon : ReactNativeRingPicker.DEFAULT_ICON;
+            return React.isValidElement(propIcon) ? propIcon : ReactNativeRingPicker.DEFAULT_ICON(this.props.defaultIconColor);
         };
 
         return this.props.icons.map((propIcon, index, array) => ({
