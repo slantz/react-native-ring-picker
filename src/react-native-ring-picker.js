@@ -310,12 +310,12 @@ export default class ReactNativeRingPicker extends React.Component {
         }));
     }
 
-    getStyle() {
+    rotateOnInputPixelDistanceMatchingRadianShift() {
         return [
             {
                 transform: [
                     {
-                        rotate: this.state.pan.interpolate({inputRange: [-150, 0, 150], outputRange: ["-60deg", "0deg", "60deg"]})
+                        rotate: this.state.pan.interpolate({inputRange: [-(this.GIRTH_ANGLE * this.STEP_LENGTH_TO_1_ANGLE), 0, this.GIRTH_ANGLE * this.STEP_LENGTH_TO_1_ANGLE], outputRange: [`-${this.GIRTH_ANGLE}deg`, "0deg", `${this.GIRTH_ANGLE}deg`]})
                     }
                 ]
             }
@@ -589,7 +589,7 @@ export default class ReactNativeRingPicker extends React.Component {
                     onLayout={this.defineAxesCoordinatesOnLayoutDisplacement}>
                     {this.state.showArrowHint && <View style={STYLES.swipeArrowHint}><SwipeArrowHint /></View>}
                     <Animated.View
-                        style={this.getStyle()}
+                        style={this.rotateOnInputPixelDistanceMatchingRadianShift()}
                         {...this._panResponder.panHandlers}>
                         <CircleBlueGradient />
                     </Animated.View>
