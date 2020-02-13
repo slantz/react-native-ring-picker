@@ -107,8 +107,9 @@ export default class ReactNativeRingPicker extends React.Component {
                 this.checkPreviousDifferenceLengths(gestureState.dx, gestureState.dy);
 
                 // TODO: 2. uncomment this to make initial movement
-                this.state.pan.setValue(this.CURRENT_VECTOR_DIFFERENCE_LENGTH);
+                // this.state.pan.setValue(this.CURRENT_VECTOR_DIFFERENCE_LENGTH);
                 // TODO: 5. uncomment this for icons to move
+                this.state.pan.setValue(this.CURRENT_VECTOR_DIFFERENCE_LENGTH);
                 this.setState({
                     ...this.state,
                     CURRENT_ICON_SHIFT: this.CURRENT_VECTOR_DIFFERENCE_LENGTH / this.STEP_LENGTH_TO_1_ANGLE
@@ -147,7 +148,7 @@ export default class ReactNativeRingPicker extends React.Component {
 
     snapNearestIconToVerticalAxis(lastGesture) {
         let {minDistanceToVerticalAxis, minDistanceToHorizontalAxis, sign, currentSnappedIcon} = this.getMinDistanceToVerticalAxisAndSnappedIcon();
-        // TODO: 12. add this code to adjust  exponential gap when snapping to the middle when the icons are far away
+        // TODO: 13. add this code to adjust  exponential gap when snapping to the middle when the icons are far away
         [minDistanceToVerticalAxis, minDistanceToHorizontalAxis] = this.updateMinimalDistanceExponentialDeflection(minDistanceToVerticalAxis, minDistanceToHorizontalAxis, currentSnappedIcon);
 
         this.updateCurrentDirectionBasedOnNearestIconPosition(sign);
@@ -547,7 +548,7 @@ export default class ReactNativeRingPicker extends React.Component {
         this.state.icons.forEach((icon) => {
             let coordinates = this.calculateIconCurrentPosition(icon.id);
 
-            // TODO: 5. uncomment this for icons to NOT have animation
+            // TODO: 3. 5. uncomment this for icons to NOT have animation
             // this.state.icons.filter((i) => i.id === icon.id)[0].position.setValue({
             //     x: coordinates.left,
             //     y: coordinates.top
@@ -561,7 +562,7 @@ export default class ReactNativeRingPicker extends React.Component {
                 },
                 easing : Easing.linear,
                 speed : 30,
-            // TODO: 11. uncomment to fix the displacement for abrupt icons release
+            // TODO: 12. uncomment to fix the displacement for abrupt icons release to remove the delay
                 restSpeedThreshold : 10,
                 bounciness : 0,
                 restDisplacementThreshold : extractCorrectRestDisplacementThreshold(dx)
