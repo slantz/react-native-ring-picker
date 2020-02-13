@@ -106,22 +106,26 @@ export default class ReactNativeRingPicker extends React.Component {
                 this.defineCurrentSection(gestureState.moveX, gestureState.moveY);
                 this.checkPreviousDifferenceLengths(gestureState.dx, gestureState.dy);
 
-                // TODO: uncomment this to make initial movement
-                // this.state.pan.setValue(this.CURRENT_VECTOR_DIFFERENCE_LENGTH);
-                // this.setState({
-                //     ...this.state,
-                //     CURRENT_ICON_SHIFT: this.CURRENT_VECTOR_DIFFERENCE_LENGTH / this.STEP_LENGTH_TO_1_ANGLE
-                // }, () => this.calculateIconCurrentPositions(gestureState.vx));
+                // TODO: 2. uncomment this to make initial movement
+                this.state.pan.setValue(this.CURRENT_VECTOR_DIFFERENCE_LENGTH);
+                // TODO: 5. uncomment this for icons to move
+                this.setState({
+                    ...this.state,
+                    CURRENT_ICON_SHIFT: this.CURRENT_VECTOR_DIFFERENCE_LENGTH / this.STEP_LENGTH_TO_1_ANGLE
+                }, () => this.calculateIconCurrentPositions(gestureState.vx));
             },
             onPanResponderRelease: (evt, gestureState) => {
                 let lastGesture = {...gestureState};
 
-                // TODO: get back this piece of code to perform snapping to the middle axis
-                //this.createFinishAnimationPromisesAndResolveIfIconsAreNotMovingAlready();
+                // TODO: 10. get back this piece of code to perform snapping to the middle axis
+                // this.snapNearestIconToVerticalAxis(lastGesture);
 
-                // Promise
-                //     .all(this.getFinishAnimationPromises())
-                //     .then(() => this.snapNearestIconToVerticalAxis(lastGesture));
+                // TODO: 11. abrupt release of icons
+                this.createFinishAnimationPromisesAndResolveIfIconsAreNotMovingAlready();
+
+                Promise
+                    .all(this.getFinishAnimationPromises())
+                    .then(() => this.snapNearestIconToVerticalAxis(lastGesture));
             }
         });
     }
@@ -143,8 +147,8 @@ export default class ReactNativeRingPicker extends React.Component {
 
     snapNearestIconToVerticalAxis(lastGesture) {
         let {minDistanceToVerticalAxis, minDistanceToHorizontalAxis, sign, currentSnappedIcon} = this.getMinDistanceToVerticalAxisAndSnappedIcon();
-        // TODO: add this code to adjust  exponential gap when snapping to the middle when the icons are far away
-        // [minDistanceToVerticalAxis, minDistanceToHorizontalAxis] = this.updateMinimalDistanceExponentialDeflection(minDistanceToVerticalAxis, minDistanceToHorizontalAxis, currentSnappedIcon);
+        // TODO: 12. add this code to adjust  exponential gap when snapping to the middle when the icons are far away
+        [minDistanceToVerticalAxis, minDistanceToHorizontalAxis] = this.updateMinimalDistanceExponentialDeflection(minDistanceToVerticalAxis, minDistanceToHorizontalAxis, currentSnappedIcon);
 
         this.updateCurrentDirectionBasedOnNearestIconPosition(sign);
         this.setAdditiveMovementLength((sign * minDistanceToVerticalAxis), -minDistanceToHorizontalAxis);
@@ -317,17 +321,17 @@ export default class ReactNativeRingPicker extends React.Component {
     }
 
     rotateOnInputPixelDistanceMatchingRadianShift() {
-        // TODO: this is necessary to reflect visual movement on ring
-        return {};
-        // return [
-        //     {
-        //         transform: [
-        //             {
-        //                 rotate: this.state.pan.interpolate({inputRange: [-(this.GIRTH_ANGLE * this.STEP_LENGTH_TO_1_ANGLE), 0, this.GIRTH_ANGLE * this.STEP_LENGTH_TO_1_ANGLE], outputRange: [`-${this.GIRTH_ANGLE}deg`, "0deg", `${this.GIRTH_ANGLE}deg`]})
-        //             }
-        //         ]
-        //     }
-        // ]
+        // TODO: 2. this is necessary to reflect visual movement on ring
+        // return {};
+        return [
+            {
+                transform: [
+                    {
+                        rotate: this.state.pan.interpolate({inputRange: [-(this.GIRTH_ANGLE * this.STEP_LENGTH_TO_1_ANGLE), 0, this.GIRTH_ANGLE * this.STEP_LENGTH_TO_1_ANGLE], outputRange: [`-${this.GIRTH_ANGLE}deg`, "0deg", `${this.GIRTH_ANGLE}deg`]})
+                    }
+                ]
+            }
+        ]
     };
 
     goToCurrentFocusedPage = () => {
@@ -348,8 +352,8 @@ export default class ReactNativeRingPicker extends React.Component {
             });
             this.STEP_LENGTH_TO_1_ANGLE = 2 * Math.PI * this.state.ICON_PATH_RADIUS / 360;
 
-            // TODO: uncomment this to make icons have initial position
-            // this.calculateIconCurrentPositions();
+            // TODO: 3. uncomment this to make icons have initial position
+            this.calculateIconCurrentPositions();
         });
     };
 
@@ -494,13 +498,13 @@ export default class ReactNativeRingPicker extends React.Component {
          *
          * this is parabolic acceleration, basically - further the position from 270 degrees - more would be the gap from the vertical axis - thus creating the distance from center aligned icon
          */
-        // TODO: return this part of the code to have an exponential gap to the middle icon
-        // if (currentIconAngle < 255) {
-        //     currentIconAngle = currentIconAngle - (15 - 0.004165 * Math.pow((currentIconAngle - 270), 2));
-        // }
-        // else if (currentIconAngle > 285) {
-        //     currentIconAngle = currentIconAngle + (15 - 0.004165 * Math.pow((currentIconAngle - 270), 2));
-        // }
+        // TODO: 9. return this part of the code to have an exponential gap to the middle icon
+        if (currentIconAngle < 255) {
+            currentIconAngle = currentIconAngle - (15 - 0.004165 * Math.pow((currentIconAngle - 270), 2));
+        }
+        else if (currentIconAngle > 285) {
+            currentIconAngle = currentIconAngle + (15 - 0.004165 * Math.pow((currentIconAngle - 270), 2));
+        }
 
         return {
             top: this.state.XY_AXES_COORDINATES.Y - this.state.XY_AXES_COORDINATES.PAGE_Y + this.state.ICON_PATH_RADIUS * Math.sin(currentIconAngle * (Math.PI / 180)),
@@ -515,18 +519,18 @@ export default class ReactNativeRingPicker extends React.Component {
 
         let currentAngle = (270 + this.state.CURRENT_ICON_SHIFT + this.INDEX_EXTRACTORS[key] + (this.state.icons.filter((icon) => icon.id === key)[0].index * this.ICON_POSITION_ANGLE));
 
-        // TODO: return back this code to get back moving icon to another part of the screen for infinite scroll
-        // if (currentAngle < 270 - this.GIRTH_ANGLE / 2) {
-        //     this.hideIconWhileMovingBehindCircle(key);
-        //     this.INDEX_EXTRACTORS[key] += this.GIRTH_ANGLE;
-        //     return currentAngle + this.GIRTH_ANGLE;
-        // }
+        // TODO: 7. return back this code to get back moving icon to another part of the screen for infinite scroll
+        if (currentAngle < 270 - this.GIRTH_ANGLE / 2) {
+            this.hideIconWhileMovingBehindCircle(key);
+            this.INDEX_EXTRACTORS[key] += this.GIRTH_ANGLE;
+            return currentAngle + this.GIRTH_ANGLE;
+        }
 
-        // if (currentAngle > 270 + this.GIRTH_ANGLE / 2) {
-        //     this.hideIconWhileMovingBehindCircle(key);
-        //     this.INDEX_EXTRACTORS[key] -= this.GIRTH_ANGLE;
-        //     return currentAngle - this.GIRTH_ANGLE;
-        // }
+        if (currentAngle > 270 + this.GIRTH_ANGLE / 2) {
+            this.hideIconWhileMovingBehindCircle(key);
+            this.INDEX_EXTRACTORS[key] -= this.GIRTH_ANGLE;
+            return currentAngle - this.GIRTH_ANGLE;
+        }
 
         return currentAngle;
     }
@@ -543,6 +547,13 @@ export default class ReactNativeRingPicker extends React.Component {
         this.state.icons.forEach((icon) => {
             let coordinates = this.calculateIconCurrentPosition(icon.id);
 
+            // TODO: 5. uncomment this for icons to NOT have animation
+            // this.state.icons.filter((i) => i.id === icon.id)[0].position.setValue({
+            //     x: coordinates.left,
+            //     y: coordinates.top
+            // });
+
+            // TODO: 6. uncomment this for icons to have animation
             Animated.spring(icon.position, {
                 toValue : {
                     x : coordinates.left,
@@ -550,9 +561,13 @@ export default class ReactNativeRingPicker extends React.Component {
                 },
                 easing : Easing.linear,
                 speed : 30,
+            // TODO: 11. uncomment to fix the displacement for abrupt icons release
                 restSpeedThreshold : 10,
                 bounciness : 0,
                 restDisplacementThreshold : extractCorrectRestDisplacementThreshold(dx)
+            // TODO: 10. icons get back but without abrupt release
+            // }).start();
+            // TODO: 11. uncomment to fix the displacement for abrupt icons release
             }).start((finish) => finish.finished
                 && typeof this.ALL_ICONS_FINISH_ANIMATIONS.resolvers[icon.id] === "function"
                 && this.ALL_ICONS_FINISH_ANIMATIONS.resolvers[icon.id]());

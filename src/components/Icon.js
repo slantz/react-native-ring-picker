@@ -5,7 +5,7 @@ import { STYLES } from "../styles";
 import { SQUARE_DIMENSIONS } from "../util";
 
 export const Icon = ({icon, onPress, styleIconText}) => {
-    // TODO: get back this code to make icons smaller and opaque when moving from the center
+    // TODO: 8. get back this code to make icons smaller and opaque when moving from the center
     let getIconsTransformDynamicStyles = () => ({
         opacity : icon.position.x.interpolate({
             inputRange : [0, SQUARE_DIMENSIONS.WIDTH * 0.3, SQUARE_DIMENSIONS.WIDTH * 0.7],
@@ -24,7 +24,7 @@ export const Icon = ({icon, onPress, styleIconText}) => {
     return (
         <TouchableWithoutFeedback onPress={() => onPress(icon.id)}>
             <Animated.View
-                style={[STYLES.icon, icon.styles, icon.position.getLayout()]}>
+                style={[STYLES.icon, icon.styles, icon.position.getLayout(), getIconsTransformDynamicStyles()]}>
                 {icon.isShown &&
                 <View style={STYLES.iconContainer}>
                     {icon.el}
