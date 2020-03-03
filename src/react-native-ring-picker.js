@@ -124,7 +124,7 @@ export default class ReactNativeRingPicker extends React.Component {
     }
 
     getCurrentSnappedMiddleIcon(icons) {
-        return icons.filter((icon) => icon.index === 0)[0].id;
+        return icons.filter((icon) => icon.index === 0)[0];
     }
 
     getFinishAnimationPromises() {
@@ -178,7 +178,7 @@ export default class ReactNativeRingPicker extends React.Component {
                     minDistanceToVerticalAxis = 0;
                 }
                 minDistanceToVerticalAxis = distanceToXAxis;
-                currentSnappedIcon = icon.id;
+                currentSnappedIcon = icon;
             }
         });
 
@@ -204,10 +204,13 @@ export default class ReactNativeRingPicker extends React.Component {
      * from this. 30 degrees center gap - adjust minimal distance to vertical axis regarding this parabolic distance
      */
     updateMinimalDistanceExponentialDeflection(minDistanceToVerticalAxis, minDistanceToHorizontalAxis, currentSnappedIcon) {
+        const id = currentSnappedIcon.id;
+        const index = currentSnappedIcon.index;
+
         let minV = minDistanceToVerticalAxis;
         let minH = minDistanceToHorizontalAxis;
 
-        let currentAngle = (270 + this.state.CURRENT_ICON_SHIFT + (this.INDEX_EXTRACTORS[currentSnappedIcon] || 0) + (this.state.icons.filter((icon) => icon.id === currentSnappedIcon)[0].index * this.ICON_POSITION_ANGLE));
+        let currentAngle = (270 + this.state.CURRENT_ICON_SHIFT + (this.INDEX_EXTRACTORS[id] || 0) + (index * this.ICON_POSITION_ANGLE));
 
         if (currentAngle < 255 || currentAngle > 285) {
             let number = (15 - 0.004165 * Math.pow((currentAngle - 270), 2)) * this.STEP_LENGTH_TO_1_ANGLE;
@@ -325,7 +328,7 @@ export default class ReactNativeRingPicker extends React.Component {
     };
 
     goToCurrentFocusedPage = () => {
-        this.state.currentSnappedIcon && this.props.onPress(this.state.currentSnappedIcon);
+        this.state.currentSnappedIcon && this.props.onPress(this.state.currentSnappedIcon.id);
     };
 
     defineAxesCoordinatesOnLayoutDisplacement = () => {
@@ -471,8 +474,8 @@ export default class ReactNativeRingPicker extends React.Component {
         }
     }
 
-    calculateIconCurrentPosition(key) {
-        let currentIconAngle = this.calculateCurrentIconAngle(key);
+    calculateIconCurrentPosition(icon) {
+        let currentIconAngle = this.calculateCurrentIconAngle(icon);
         // the Y coordinate where the center of the circle is higher than the coordinates of Icons, this is actually similar {+X:-Y} section of coordinate net
         // and INVERTED, this is basically if we'd have an upside-down screen always
 
@@ -500,22 +503,25 @@ export default class ReactNativeRingPicker extends React.Component {
         };
     }
 
-    calculateCurrentIconAngle(key) {
-        if (!this.INDEX_EXTRACTORS[key]) {
-            this.INDEX_EXTRACTORS[key] = 0;
+    calculateCurrentIconAngle(icon) {
+        const id = icon.id;
+        const index = icon.index;
+
+        if (!this.INDEX_EXTRACTORS[id]) {
+            this.INDEX_EXTRACTORS[id] = 0;
         }
 
-        let currentAngle = (270 + this.state.CURRENT_ICON_SHIFT + this.INDEX_EXTRACTORS[key] + (this.state.icons.filter((icon) => icon.id === key)[0].index * this.ICON_POSITION_ANGLE));
+        let currentAngle = (270 + this.state.CURRENT_ICON_SHIFT + this.INDEX_EXTRACTORS[id] + (index * this.ICON_POSITION_ANGLE));
 
         if (currentAngle < 270 - this.GIRTH_ANGLE / 2) {
-            this.hideIconWhileMovingBehindCircle(key);
-            this.INDEX_EXTRACTORS[key] += this.GIRTH_ANGLE;
+            this.hideIconWhileMovingBehindCircle(id);
+            this.INDEX_EXTRACTORS[id] += this.GIRTH_ANGLE;
             return currentAngle + this.GIRTH_ANGLE;
         }
 
         if (currentAngle > 270 + this.GIRTH_ANGLE / 2) {
-            this.hideIconWhileMovingBehindCircle(key);
-            this.INDEX_EXTRACTORS[key] -= this.GIRTH_ANGLE;
+            this.hideIconWhileMovingBehindCircle(id);
+            this.INDEX_EXTRACTORS[id] -= this.GIRTH_ANGLE;
             return currentAngle - this.GIRTH_ANGLE;
         }
 
@@ -532,7 +538,7 @@ export default class ReactNativeRingPicker extends React.Component {
         }
 
         this.state.icons.forEach((icon) => {
-            let coordinates = this.calculateIconCurrentPosition(icon.id);
+            let coordinates = this.calculateIconCurrentPosition(icon);
 
             Animated.spring(icon.position, {
                 toValue : {
