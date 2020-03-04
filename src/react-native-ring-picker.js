@@ -26,7 +26,7 @@ export default class ReactNativeRingPicker extends React.Component {
     };
 
     static defaultProps = {
-        onPress: () => {},
+        onPress: (iconId) => {},
         girthAngle: 120,
         iconHideOnTheBackDuration: 250,
         icons: [{id: "action_1", title: "action_1"}, "action_2", "action_3", "action_4", "action_5"],
@@ -280,7 +280,7 @@ export default class ReactNativeRingPicker extends React.Component {
      *      * title: "find"
      *      * el: <Search />
      *
-     * @returns {{el: React.Component, isShown: boolean, index: string, id: string, position: Animated.ValueXY, title: string}[]}
+     * @returns {{el: React.Element, isShown: boolean, index: string, id: string, position: Animated.ValueXY, title: string}[]}
      */
     mapPropsIconsToAnimatedOnes() {
         function getId(propIcon) {

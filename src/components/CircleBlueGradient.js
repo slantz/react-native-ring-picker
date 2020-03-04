@@ -9,8 +9,8 @@ import Svg,{
 
 export const CircleBlueGradient = () => (
     <Svg width="100%" height="100%" viewBox="0 0 955 955">
-        <G id="Слой_2">
-            <G id="Слой_1-2">
+        <G id="layer_2">
+            <G id="layer_1-2">
                 <LinearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="477.3691" y1="0.2666" x2="477.3691" y2="955">
                     <Stop offset="0" stopColor="#5896D0"/>
                     <Stop offset="0.2815" stopColor="#3D8CCB"/>
