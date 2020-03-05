@@ -203,7 +203,7 @@ export default class ReactNativeRingPicker extends React.Component {
         }
     };
 
-    adjustMinimalDistanceExponentialCorrection(angle, minV, minH) {
+    adjustMinimalExponentialDistanceCorrection(angle, minV, minH) {
         if (!this.props.isExpDistCorrection) {
             return [minV, minH];
         }
@@ -234,7 +234,7 @@ export default class ReactNativeRingPicker extends React.Component {
 
         let currentAngle = (270 + this.state.CURRENT_ICON_SHIFT + (this.INDEX_EXTRACTORS[id] || 0) + (index * this.ICON_POSITION_ANGLE));
 
-        [minV, minH] = this.adjustMinimalDistanceExponentialCorrection(currentAngle, minV, minH);
+        [minV, minH] = this.adjustMinimalExponentialDistanceCorrection(currentAngle, minV, minH);
 
         return [
             minV,
