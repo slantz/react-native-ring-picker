@@ -28,6 +28,8 @@ These are the props that are supported by the picker.
 | `style` | Object | `{}` | styles of the main <View/> component usually used for picker positioning |
 | `styleIconText` | Object | `{}` | styles extending default icon title's text styles defined inside the picker |
 | `defaultIconColor` | rgb, rgba, hex string | `undefined` | styles for setting default icon's color |
+| `isExpDistCorrection` | boolean | `true` | exponential distance correction, if disabled icons will be homogeneously distant one from another |
+| `noExpDistCorrectionDegree` | number | `15` | half of angle, where vertical axis will be bisector and where no exponential distance correction is applied, helps visually stacking icons in the middle |
 
 ### Basic default UI
 
@@ -80,3 +82,50 @@ whereas in this example 3 custom icons are used:
 - <Search/> uses custom title and the component name is used as an id by default (search) 
 
 ![Ring picker 3 custom icons](./assets/gif/ring-picker-3-custom-icons.gif)
+
+### Exponential distance correction is disabled
+
+```jsx harmony
+<ReactNativeRingPicker
+    icons={[
+        <PaymentCard id={"payments"} title={"Your payments"}/>,
+        <Profile/>,
+        <Search title={"find"} color={"#F88DFF"}/>,
+        <Family/>,
+        <Health title={"Activity"}/>
+    ]}
+    girthAngle={120}
+    onPress={(iconId) => setChosenId(iconId)}
+    style={{flex: 0, marginTop: 0}}
+    defaultIconColor={"#ffccec"}
+    isExpDistCorrection={false}
+/>
+```
+
+where `isExpDistCorrection={false}` disables any exponential distance between icons making it homogeneous.
+
+![Ring picker is exponential distance correction](./assets/gif/ring-picker-is-exp-dist-corr.gif)
+
+### Custom angle gap to disable exponential distance correction near the vertical axis
+
+```jsx harmony
+<ReactNativeRingPicker
+    icons={[
+        <PaymentCard id={"payments"} title={"Your payments"}/>,
+        <Profile/>,
+        <Search title={"find"} color={"#F88DFF"}/>,
+        <Family/>,
+        <Health title={"Activity"}/>
+    ]}
+    girthAngle={120}
+    onPress={(iconId) => setChosenId(iconId)}
+    style={{flex: 0, marginTop: 0}}
+    defaultIconColor={"#ffccec"}
+    noExpDistCorrectionDegree={5}
+/>
+```
+
+![Ring picker exponential distance custom correction angle](./assets/gif/ring-picker-exp-dist-corr-angle.gif)
+
+where `noExpDistCorrectionDegree={5}` sets the range of 265°-275° where no exponential distance correction is applied,
+this creates visual effect of icons stacking near the vertical axis.
