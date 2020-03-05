@@ -212,6 +212,8 @@ export default class ReactNativeRingPicker extends React.Component {
 
         let currentAngle = (270 + this.state.CURRENT_ICON_SHIFT + (this.INDEX_EXTRACTORS[id] || 0) + (index * this.ICON_POSITION_ANGLE));
 
+        currentAngle = Math.round(currentAngle);
+
         if (currentAngle < 255 || currentAngle > 285) {
             let number = (15 - 0.004165 * Math.pow((currentAngle - 270), 2)) * this.STEP_LENGTH_TO_1_ANGLE;
 
@@ -490,6 +492,8 @@ export default class ReactNativeRingPicker extends React.Component {
          *
          * this is parabolic acceleration, basically - further the position from 270 degrees - more would be the gap from the vertical axis - thus creating the distance from center aligned icon
          */
+        currentIconAngle = Math.round(currentIconAngle);
+
         if (currentIconAngle < 255) {
             currentIconAngle = currentIconAngle - (15 - 0.004165 * Math.pow((currentIconAngle - 270), 2));
         }
