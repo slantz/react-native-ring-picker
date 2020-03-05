@@ -22,7 +22,9 @@ export default class ReactNativeRingPicker extends React.Component {
         showArrowHint: PropTypes.bool,
         style: PropTypes.object,
         styleIconText: PropTypes.object,
-        defaultIconColor: PropTypes.string
+        defaultIconColor: PropTypes.string,
+        isExpDistCorrection: PropTypes.bool,
+        noExpDistCorrectionDegree: PropTypes.number
     };
 
     static defaultProps = {
@@ -33,7 +35,9 @@ export default class ReactNativeRingPicker extends React.Component {
         showArrowHint: true,
         style: {},
         styleIconText: {},
-        defaultIconColor: undefined
+        defaultIconColor: undefined,
+        isExpDistCorrection: true,
+        noExpDistCorrectionDegree: 15
     };
 
     constructor(props) {
@@ -199,6 +203,24 @@ export default class ReactNativeRingPicker extends React.Component {
         }
     };
 
+    adjustMinimalDistanceExponentialCorrection(angle, minV, minH) {
+        if (!this.props.isExpDistCorrection) {
+            return [minV, minH];
+        }
+
+        let currentAngle = Math.round(angle);
+        let lowestBoundaryDegree = 270 - this.props.noExpDistCorrectionDegree;
+        let highestBoundaryDegree = 270 + this.props.noExpDistCorrectionDegree;
+
+        if (currentAngle < lowestBoundaryDegree || currentAngle > highestBoundaryDegree) {
+            let number = (15 - 0.004165 * Math.pow((currentAngle - 270), 2)) * this.STEP_LENGTH_TO_1_ANGLE;
+
+            return [minV - number, minH - Math.sqrt(number) / 2];
+        }
+
+        return [minV, minH];
+    }
+
     /**
      * if current angle is lower than 270 center angle minus 15 degrees gap, that implies parabolic distance
      * from this. 30 degrees center gap - adjust minimal distance to vertical axis regarding this parabolic distance
@@ -212,14 +234,7 @@ export default class ReactNativeRingPicker extends React.Component {
 
         let currentAngle = (270 + this.state.CURRENT_ICON_SHIFT + (this.INDEX_EXTRACTORS[id] || 0) + (index * this.ICON_POSITION_ANGLE));
 
-        currentAngle = Math.round(currentAngle);
-
-        if (currentAngle < 255 || currentAngle > 285) {
-            let number = (15 - 0.004165 * Math.pow((currentAngle - 270), 2)) * this.STEP_LENGTH_TO_1_ANGLE;
-
-            minV = minV - number;
-            minH = minH - Math.sqrt(number) / 2;
-        }
+        [minV, minH] = this.adjustMinimalDistanceExponentialCorrection(currentAngle, minV, minH);
 
         return [
             minV,
@@ -476,6 +491,27 @@ export default class ReactNativeRingPicker extends React.Component {
         }
     }
 
+    adjustCurrentIconAngleExponentially(angle) {
+        let currentIconAngle = Math.round(angle);
+
+        if (!this.props.isExpDistCorrection) {
+            return currentIconAngle;
+        }
+
+        let lowestBoundaryDegree = 270 - this.props.noExpDistCorrectionDegree;
+        let highestBoundaryDegree = 270 + this.props.noExpDistCorrectionDegree;
+
+        if (currentIconAngle < lowestBoundaryDegree) {
+            return currentIconAngle - (15 - 0.004165 * Math.pow((currentIconAngle - 270), 2));
+        }
+        else if (currentIconAngle > highestBoundaryDegree) {
+            return currentIconAngle + (15 - 0.004165 * Math.pow((currentIconAngle - 270), 2));
+        }
+        else {
+            return currentIconAngle;
+        }
+    }
+
     calculateIconCurrentPosition(icon) {
         let currentIconAngle = this.calculateCurrentIconAngle(icon);
         // the Y coordinate where the center of the circle is higher than the coordinates of Icons, this is actually similar {+X:-Y} section of coordinate net
@@ -492,14 +528,7 @@ export default class ReactNativeRingPicker extends React.Component {
          *
          * this is parabolic acceleration, basically - further the position from 270 degrees - more would be the gap from the vertical axis - thus creating the distance from center aligned icon
          */
-        currentIconAngle = Math.round(currentIconAngle);
-
-        if (currentIconAngle < 255) {
-            currentIconAngle = currentIconAngle - (15 - 0.004165 * Math.pow((currentIconAngle - 270), 2));
-        }
-        else if (currentIconAngle > 285) {
-            currentIconAngle = currentIconAngle + (15 - 0.004165 * Math.pow((currentIconAngle - 270), 2));
-        }
+        currentIconAngle = this.adjustCurrentIconAngleExponentially(currentIconAngle);
 
         return {
             top: this.state.XY_AXES_COORDINATES.Y - this.state.XY_AXES_COORDINATES.PAGE_Y + this.state.ICON_PATH_RADIUS * Math.sin(currentIconAngle * (Math.PI / 180)),
