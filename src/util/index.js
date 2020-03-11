@@ -1,1 +1,1 @@
-export {SQUARE_DIMENSIONS} from './constants';
+export {SQUARE_DIMENSIONS, DIRECTIONS, CIRCLE_SECTIONS} from './constants';
