@@ -11,7 +11,8 @@ import {debounce} from "debounce";
 import {
     HIDE_ARROW_HINT,
     HIDE_ICON,
-    SET_PATH_RADIUS_AND_COORDINATES, SHOW_ICON,
+    SET_PATH_RADIUS_AND_COORDINATES,
+    SHOW_ICON,
     UPDATE_CURRENT_ICON_SHIFT,
     UPDATE_CURRENT_SNAPPED_ICON
 } from "./actions";
@@ -72,7 +73,7 @@ export const ReactNativeRingPicker = (
 
                 state.pan.setValue(CURRENT_VECTOR_DIFFERENCE_LENGTH);
                 dispatch({type: UPDATE_CURRENT_ICON_SHIFT, payload: CURRENT_VECTOR_DIFFERENCE_LENGTH / STEP_LENGTH_TO_1_ANGLE});
-                calculateIconCurrentPositions(gestureState.vx);
+                // calculateIconCurrentPositions(gestureState.vx);
             },
             onPanResponderRelease: (evt, gestureState) => {
                 let lastGesture = {...gestureState};
@@ -85,6 +86,15 @@ export const ReactNativeRingPicker = (
             }
         });
     }, [icons, girthAngle]);
+
+    useEffect(() => {
+        STEP_LENGTH_TO_1_ANGLE = 2 * Math.PI * state.ICON_PATH_RADIUS / 360;
+        calculateIconCurrentPositions();
+    }, [state.ICON_PATH_RADIUS]);
+
+    useEffect(() => {
+        calculateIconCurrentPositions();
+    }, [state.CURRENT_ICON_SHIFT]);
 
     function getFinishAnimationPromises() {
         return state.icons.map((icon) => ALL_ICONS_FINISH_ANIMATIONS.promises[icon.id]);
@@ -206,7 +216,6 @@ export const ReactNativeRingPicker = (
         }).start();
         dispatch({type: UPDATE_CURRENT_ICON_SHIFT, payload: CURRENT_VECTOR_DIFFERENCE_LENGTH / STEP_LENGTH_TO_1_ANGLE});
         dispatch({type: UPDATE_CURRENT_SNAPPED_ICON, payload: currentSnappedIcon});
-        calculateIconCurrentPositions();
     }
 
     function rotateOnInputPixelDistanceMatchingRadianShift() {
@@ -239,9 +248,6 @@ export const ReactNativeRingPicker = (
                     }
                 }
             });
-            STEP_LENGTH_TO_1_ANGLE = 2 * Math.PI * state.ICON_PATH_RADIUS / 360;
-
-            calculateIconCurrentPositions();
         });
     };
 
