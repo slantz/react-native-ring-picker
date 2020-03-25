@@ -4,7 +4,7 @@ import {
     SET_PATH_RADIUS_AND_COORDINATES,
     SHOW_ICON,
     UPDATE_CURRENT_ICON_SHIFT,
-    UPDATE_CURRENT_SNAPPED_ICON
+    UPDATE_CURRENT_SNAPPED_ICON_AND_SHIFT
 } from "../actions";
 
 export const reducer = (state, {type, payload}) => {
@@ -23,10 +23,11 @@ export const reducer = (state, {type, payload}) => {
                 ...state,
                 CURRENT_ICON_SHIFT: payload
             };
-        case UPDATE_CURRENT_SNAPPED_ICON:
+        case UPDATE_CURRENT_SNAPPED_ICON_AND_SHIFT:
             return {
                 ...state,
-                currentSnappedIcon: payload
+                CURRENT_ICON_SHIFT: payload.CURRENT_ICON_SHIFT,
+                currentSnappedIcon: payload.currentSnappedIcon
             };
         case SET_PATH_RADIUS_AND_COORDINATES:
             return {

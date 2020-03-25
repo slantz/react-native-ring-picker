@@ -1,4 +1,4 @@
-import React, {useReducer, useEffect} from "react";
+import React, {useReducer, useEffect, useLayoutEffect} from "react";
 import PropTypes from "prop-types";
 import {Animated, Easing, PanResponder, View} from "react-native";
 import {CIRCLE_SECTIONS, DIRECTIONS, SQUARE_DIMENSIONS} from "./util";
@@ -14,7 +14,7 @@ import {
     SET_PATH_RADIUS_AND_COORDINATES,
     SHOW_ICON,
     UPDATE_CURRENT_ICON_SHIFT,
-    UPDATE_CURRENT_SNAPPED_ICON
+    UPDATE_CURRENT_SNAPPED_ICON_AND_SHIFT
 } from "./actions";
 import {reducer} from "./reducers";
 import {getInitialState} from "./store";
@@ -50,7 +50,7 @@ export const ReactNativeRingPicker = (
 
     const [state, dispatch] = useReducer(reducer, getInitialState(icons, showArrowHint, defaultIconColor));
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         ICON_POSITION_ANGLE = girthAngle / icons.length;
 
         ALL_ICONS_FINISH_ANIMATIONS = {
@@ -214,8 +214,13 @@ export const ReactNativeRingPicker = (
             speed : 12
             // useNativeDriver: true // if this is used - the last click after previous release will twist back nad forward
         }).start();
-        dispatch({type: UPDATE_CURRENT_ICON_SHIFT, payload: CURRENT_VECTOR_DIFFERENCE_LENGTH / STEP_LENGTH_TO_1_ANGLE});
-        dispatch({type: UPDATE_CURRENT_SNAPPED_ICON, payload: currentSnappedIcon});
+        dispatch({
+            type: UPDATE_CURRENT_SNAPPED_ICON_AND_SHIFT,
+            payload: {
+                CURRENT_ICON_SHIFT: CURRENT_VECTOR_DIFFERENCE_LENGTH / STEP_LENGTH_TO_1_ANGLE,
+                currentSnappedIcon,
+            }
+        });
     }
 
     function rotateOnInputPixelDistanceMatchingRadianShift() {
