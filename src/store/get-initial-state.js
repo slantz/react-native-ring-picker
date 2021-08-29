@@ -100,7 +100,8 @@ function getInitialState(icons, showArrowHint, defaultIconColor) {
             PAGE_Y: 0,
             PAGE_X: 0
         },
-        CURRENT_ICON_SHIFT: 0
+        CURRENT_ICON_SHIFT: 0,
+        GESTURE_VX: 0,
     };
 }
 

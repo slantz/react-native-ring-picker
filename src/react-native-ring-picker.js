@@ -13,7 +13,7 @@ import {
     HIDE_ICON,
     SET_PATH_RADIUS_AND_COORDINATES,
     SHOW_ICON,
-    UPDATE_CURRENT_ICON_SHIFT,
+    UPDATE_CURRENT_ICON_SHIFT_AND_GESTURE_VX,
     UPDATE_CURRENT_SNAPPED_ICON_AND_SHIFT
 } from "./actions";
 import {reducer} from "./reducers";
@@ -54,8 +54,8 @@ export const ReactNativeRingPicker = (
         ICON_POSITION_ANGLE = girthAngle / icons.length;
 
         ALL_ICONS_FINISH_ANIMATIONS = {
-            promises: state.icons.reduce((promises, icon) => {promises[icon.id] = null; return promises}, {}),
-            resolvers: state.icons.reduce((resolvers, icon) => {resolvers[icon.id] = null; return resolvers}, {})
+            promises: icons.reduce((promises, icon) => {promises[icon.id] = null; return promises}, {}),
+            resolvers: icons.reduce((resolvers, icon) => {resolvers[icon.id] = null; return resolvers}, {})
         };
 
         _panResponder = PanResponder.create({
@@ -72,7 +72,13 @@ export const ReactNativeRingPicker = (
                 checkPreviousDifferenceLengths(gestureState.dx, gestureState.dy);
 
                 state.pan.setValue(CURRENT_VECTOR_DIFFERENCE_LENGTH);
-                dispatch({type: UPDATE_CURRENT_ICON_SHIFT, payload: CURRENT_VECTOR_DIFFERENCE_LENGTH / STEP_LENGTH_TO_1_ANGLE});
+                dispatch({
+                    type: UPDATE_CURRENT_ICON_SHIFT_AND_GESTURE_VX,
+                    payload: {
+                        CURRENT_ICON_SHIFT: CURRENT_VECTOR_DIFFERENCE_LENGTH / STEP_LENGTH_TO_1_ANGLE,
+                        VX: gestureState.vx
+                    }
+                });
                 // calculateIconCurrentPositions(gestureState.vx);
             },
             onPanResponderRelease: (evt, gestureState) => {
@@ -93,7 +99,7 @@ export const ReactNativeRingPicker = (
     }, [state.ICON_PATH_RADIUS]);
 
     useEffect(() => {
-        calculateIconCurrentPositions();
+        calculateIconCurrentPositions(state.GESTURE_VX);
     }, [state.CURRENT_ICON_SHIFT]);
 
     function getFinishAnimationPromises() {
@@ -219,6 +225,7 @@ export const ReactNativeRingPicker = (
             payload: {
                 CURRENT_ICON_SHIFT: CURRENT_VECTOR_DIFFERENCE_LENGTH / STEP_LENGTH_TO_1_ANGLE,
                 currentSnappedIcon,
+                VX: 0
             }
         });
     }

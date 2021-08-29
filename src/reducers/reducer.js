@@ -3,7 +3,7 @@ import {
     HIDE_ICON,
     SET_PATH_RADIUS_AND_COORDINATES,
     SHOW_ICON,
-    UPDATE_CURRENT_ICON_SHIFT,
+    UPDATE_CURRENT_ICON_SHIFT_AND_GESTURE_VX,
     UPDATE_CURRENT_SNAPPED_ICON_AND_SHIFT
 } from "../actions";
 
@@ -18,10 +18,11 @@ export const reducer = (state, {type, payload}) => {
     }
 
     switch (type) {
-        case UPDATE_CURRENT_ICON_SHIFT:
+        case UPDATE_CURRENT_ICON_SHIFT_AND_GESTURE_VX:
             return {
                 ...state,
-                CURRENT_ICON_SHIFT: payload
+                CURRENT_ICON_SHIFT: payload.CURRENT_ICON_SHIFT,
+                GESTURE_VX: payload.VX
             };
         case UPDATE_CURRENT_SNAPPED_ICON_AND_SHIFT:
             return {
